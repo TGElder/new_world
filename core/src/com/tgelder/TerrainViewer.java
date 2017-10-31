@@ -2,9 +2,12 @@ package com.tgelder;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.input.GestureDetector;
@@ -12,20 +15,27 @@ import com.tgelder.downhill.renderer.HeightRenderer;
 import com.tgelder.downhill.terrain.Terrain;
 import com.tgelder.image.PixmapImage;
 
+import java.util.Optional;
+
 public class TerrainViewer extends ApplicationAdapter {
-	SpriteBatch batch;
-	Sprite sprite;
+	private SpriteBatch batch;
+    private SpriteBatch batch2;
+	private Sprite sprite;
+    private BitmapFont font;
 	private OrthographicCamera cam;
+	private TerrainInfo terrainInfo;
 
 	@Override
 	public void create () {
 
 		batch = new SpriteBatch();
+		batch2 = new SpriteBatch();
 
-		Terrain terrain = new Terrain(1986, 10);
+
+		Terrain terrain = new Terrain(1986, 10, 3000);
 		PixmapImage image = new PixmapImage(1024, 1024);
 		HeightRenderer renderer = new HeightRenderer();
-		renderer.render(terrain.getHeights(), terrain.getMinHeight(), terrain.getMaxHeight(), image);
+		renderer.render(terrain.getAltitudes(), 0, 3000, image);
 
 		Texture texture = new Texture(image.getPixmap());
 		sprite = new Sprite(texture);
@@ -35,7 +45,16 @@ public class TerrainViewer extends ApplicationAdapter {
 		cam.position.set(cam.viewportWidth / 2f, cam.viewportHeight / 2f, 0);
 		cam.update();
 
-		Gdx.input.setInputProcessor(new GestureDetector(new OrphographicCameraController(cam)));
+		terrainInfo = new TerrainInfo(terrain, cam);
+
+		InputMultiplexer multiplexer = new InputMultiplexer();
+		multiplexer.addProcessor(new GestureDetector(new OrphographicCameraController(cam)));
+		multiplexer.addProcessor(terrainInfo);
+
+		Gdx.input.setInputProcessor(multiplexer);
+
+		font = new BitmapFont();
+		font.setColor(Color.RED);
 	}
 
 	@Override
@@ -49,6 +68,12 @@ public class TerrainViewer extends ApplicationAdapter {
 		sprite.setPosition(0, 0);
 		sprite.draw(batch);
 		batch.end();
+
+		batch2.begin();
+		font.draw(batch2, terrainInfo.getAltitude() + "\n" + terrainInfo.getX() + "\n" + terrainInfo.getY()
+        , 200, 200);
+		batch2.end();
+
 	}
 	
 	@Override

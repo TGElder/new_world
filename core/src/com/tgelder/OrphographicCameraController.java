@@ -36,7 +36,7 @@ public class OrphographicCameraController implements GestureListener {
   public boolean pan(float x, float y, float deltaX, float deltaY) {
     camera.translate(-deltaX, deltaY);
     camera.update();
-    return true;
+    return false;
   }
 
   @Override

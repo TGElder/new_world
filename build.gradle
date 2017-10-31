@@ -25,7 +25,7 @@ allprojects {
         box2DLightsVersion = '1.4'
         ashleyVersion = '1.7.0'
         aiVersion = '1.8.0'
-        downhillVersion = '1.0.0'
+        downhillVersion = '1.0.2'
         lombokVersion = '1.16.16'
     }
 
