@@ -4,10 +4,7 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -25,6 +22,9 @@ public class TerrainViewer extends ApplicationAdapter {
   private OrthographicCamera cam;
   private TerrainInfo terrainInfo;
   private int seaLevel = 0;
+  private final static HeightRenderer renderer = new HeightRenderer();
+  private PixmapImage image;
+  private Texture texture;
 
   @Override
   public void create () {
@@ -33,9 +33,12 @@ public class TerrainViewer extends ApplicationAdapter {
     batch2 = new SpriteBatch();
 
 
-    terrain = new Terrain(1986, 10, 3000);
 
+    terrain = new Terrain(1986, 10, 3000);
+    image = new PixmapImage(terrain.getWidth(), terrain.getWidth());
+    texture = new Texture(terrain.getWidth(), terrain.getWidth(), Pixmap.Format.RGB888);
     updateSprite();
+    sprite = new Sprite(texture);
 
     cam = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
@@ -98,15 +101,13 @@ public class TerrainViewer extends ApplicationAdapter {
 
   private void updateSprite() {
 
-    PixmapImage image = new PixmapImage(1024, 1024);
 
 
-
-    HeightRenderer renderer = new HeightRenderer();
     renderer.render(terrain.getAltitudes(), seaLevel, 3000, image);
 
-    Texture texture = new Texture(image.getPixmap());
-    sprite = new Sprite(texture);
+    texture.draw(image.getPixmap(), 0, 0);
+    //sprite = new Sprite(texture);
+
   }
 
 }
