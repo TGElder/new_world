@@ -27,6 +27,8 @@ allprojects {
         aiVersion = '1.8.0'
         downhillVersion = '1.0.2'
         lombokVersion = '1.16.16'
+        jUnitVersion = '4.12'
+        jAssertVersion = '3.8.0'
     }
 
     repositories {
@@ -59,6 +61,8 @@ project(":core") {
         compile "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
         compile "com.tgelder:downhill:$downhillVersion"
         compile "org.projectlombok:lombok:$lombokVersion"
+        testCompile "junit:junit:$jUnitVersion"
+        testCompile "org.assertj:assertj-core:$jAssertVersion"
     }
 }
 
