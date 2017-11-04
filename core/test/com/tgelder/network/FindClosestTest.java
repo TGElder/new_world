@@ -1,4 +1,4 @@
-package com.tgelder.newworld.network;
+package com.tgelder.network;
 
 import com.google.common.collect.ImmutableSet;
 import org.junit.Test;

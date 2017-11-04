@@ -1,4 +1,4 @@
-package com.tgelder.newworld.network;
+package com.tgelder.network;
 
 import com.google.common.collect.ImmutableSet;
 import lombok.AllArgsConstructor;
@@ -69,7 +69,7 @@ public class Network<T> {
           throw new RuntimeException("Invalid state");
         }
       }
-      
+
       Map<T, Optional<Edge<T>>> neighbours = getOut(focus)
               .filter(e -> !closed.contains(e.getTo()))
               .collect(Collectors.groupingBy(Edge::getTo, Collectors.minBy(Comparator.comparingInt(Edge::getCost))));

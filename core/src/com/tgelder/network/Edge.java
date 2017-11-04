@@ -1,4 +1,4 @@
-package com.tgelder.newworld.network;
+package com.tgelder.network;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
