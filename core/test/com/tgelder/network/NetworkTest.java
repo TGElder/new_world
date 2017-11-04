@@ -8,6 +8,7 @@ import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@SuppressWarnings({"unchecked"})
 public class NetworkTest {
 
   private static Network<Integer> network;
@@ -108,6 +109,26 @@ public class NetworkTest {
     assertThat(network.getReverses(edge65a)).containsExactly(edge56);
     assertThat(network.getReverses(edge01)).isEmpty();
     assertThat(network.getReverses(edge77)).containsExactly(edge77);
+  }
+
+  @Test
+  public void testGetNodes() {
+    ImmutableSet<Integer> nodes = generateNodes(10);
+    ImmutableSet<Edge<Integer>> edges = ImmutableSet.of(
+            new Edge(0, 1, 1),
+            new Edge(0, 6, 5),
+            new Edge(0, 7, 6),
+            new Edge(0, 8, 7),
+            new Edge(1, 2, 10),
+            new Edge(1, 3, 1),
+            new Edge(2, 5, 1),
+            new Edge(3, 4, 1),
+            new Edge(4, 5, 1),
+            new Edge(5, 2, 10));
+
+    Network<Integer> network = new Network<>(nodes, edges);
+
+    assertThat(network.getNodes(0, 6)).containsExactlyInAnyOrder(0, 1, 3, 4, 5, 6);
   }
 
 }

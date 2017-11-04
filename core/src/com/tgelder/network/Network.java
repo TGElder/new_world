@@ -39,9 +39,7 @@ public class Network<T> {
     return getEdges(edge.getTo(), edge.getFrom());
   }
 
-
-  public Set<T> findClosest(T start, Predicate<T> stoppingCondition) {
-
+  private Set<T> search(T start, Search<T> search) {
     Map<T, Integer> open = new HashMap<>();
     Set<T> closed = new HashSet<>();
 
@@ -57,17 +55,11 @@ public class Network<T> {
       open.remove(focus);
       closed.add(focus);
 
-      if ((!focus.equals(start)) && stoppingCondition.test(focus)) {
-        if (out.isEmpty()) {
-          out.add(focus);
-          closestCost = focusCost;
-        } else if (focusCost == closestCost) {
-          out.add(focus);
-        } else if (focusCost > closestCost) {
-          return out;
-        } else {
-          throw new RuntimeException("Invalid state");
-        }
+      if (search.take(focus, focusCost)) {
+        out.add(focus);
+      }
+      if (search.done()) {
+        return out;
       }
 
       Map<T, Optional<Edge<T>>> neighbours = getOut(focus)
@@ -81,7 +73,67 @@ public class Network<T> {
     }
 
     return out;
+  }
 
+  public Set<T> findClosest(T start, Predicate<T> stoppingCondition) {
+
+    return search(start, new Search<T>() {
+
+      private boolean done = false;
+      private Integer closestCost = null;
+
+      @Override
+      public boolean take(T node, int focusCost) {
+        if ((!node.equals(start)) && stoppingCondition.test(node)) {
+          if (closestCost == null) {
+            closestCost = focusCost;
+            return true;
+          } else if (focusCost == closestCost) {
+            return true;
+          } else if (focusCost > closestCost) {
+            done = true;
+            return false;
+          } else {
+            throw new RuntimeException("Invalid state");
+          }
+        } else {
+          return false;
+        }
+      }
+
+      @Override
+      public boolean done() {
+        return done;
+      }
+    });
+  }
+
+  public Set<T> getNodes(T start, int maxCost) {
+    return search(start, new Search<T>() {
+
+      private boolean done = false;
+
+      @Override
+      public boolean take(T node, int focusCost) {
+        if (focusCost >= maxCost) {
+          done = true;
+          return false;
+        } else {
+          return true;
+        }
+      }
+
+      @Override
+      public boolean done() {
+        return done;
+      }
+    });
+  }
+
+  private interface Search<T> {
+    boolean take(T node, int focusCost);
+
+    boolean done();
   }
 
   @AllArgsConstructor
