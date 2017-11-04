@@ -139,7 +139,7 @@ public class FindClosestTest {
             new Edge<>(1, 2, 1)
     );
 
-    network = new Network<>(nodes, ImmutableSet.of());
+    network = new Network<>(nodes, edges);
 
     assertThat(network.findClosest(1, predicate)).containsExactlyInAnyOrder(0, 2);
   }
