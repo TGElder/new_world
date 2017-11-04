@@ -1,0 +1,113 @@
+package com.tgelder.newworld.network;
+
+import com.google.common.collect.ImmutableList;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+import java.util.stream.IntStream;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+public class NetworkTest {
+
+  private Network<Integer> network;
+  private ImmutableList<Integer> nodes;
+  private Edge<Integer> edge01;
+  private Edge<Integer> edge02a;
+  private Edge<Integer> edge02b;
+  private Edge<Integer> edge13;
+  private Edge<Integer> edge23a;
+  private Edge<Integer> edge23b;
+  private Edge<Integer> edge56;
+  private Edge<Integer> edge65a;
+  private Edge<Integer> edge65b;
+  private Edge<Integer> edge77;
+
+  private ImmutableList<Integer> generateNodes(int howMany) {
+    return IntStream.range(0, howMany).boxed().collect(ImmutableList.toImmutableList());
+  }
+
+  @BeforeClass
+  public void beforeClass() {
+    nodes = generateNodes(8);
+
+    edge01 = new Edge<>(0, 1, 1);
+    edge02a = new Edge<>(0, 2, 1);
+    edge02b = new Edge<>(0, 2, 1);
+    edge13 = new Edge<>(1, 3, 1);
+    edge23a = new Edge<>(2, 3, 1);
+    edge23b = new Edge<>(2, 3, 1);
+    edge56 = new Edge<>(5, 6, 1);
+    edge65a = new Edge<>(6, 5, 1);
+    edge65b = new Edge<>(6, 5, 1);
+    edge77 = new Edge<>(7, 7, 1);
+
+    network = new Network<>(nodes,
+            ImmutableList.of(edge01, edge02a, edge02b, edge13, edge23a, edge23b, edge56, edge65a, edge65b, edge77));
+  }
+
+  @Test
+  public void testGetBelow() {
+    assertThat(network.getBelow(0)).containsExactlyInAnyOrder(1, 2);
+    assertThat(network.getBelow(1)).containsExactly(3);
+    assertThat(network.getBelow(2)).containsExactly(3);
+    assertThat(network.getBelow(3)).isEmpty();
+    assertThat(network.getBelow(4)).isEmpty();
+    assertThat(network.getBelow(5)).containsExactly(5);
+    assertThat(network.getBelow(6)).containsExactly(6);
+    assertThat(network.getBelow(7)).containsExactly(7);
+  }
+
+  @Test
+  public void testGetAbove() {
+    assertThat(network.getAbove(0)).isEmpty();
+    assertThat(network.getAbove(1)).containsExactly(0);
+    assertThat(network.getAbove(2)).containsExactly(0);
+    assertThat(network.getAbove(3)).containsExactlyInAnyOrder(1, 2);
+    assertThat(network.getAbove(4)).isEmpty();
+    assertThat(network.getAbove(5)).containsExactly(5);
+    assertThat(network.getAbove(6)).containsExactly(6);
+    assertThat(network.getAbove(7)).containsExactly(7);
+  }
+
+  @Test
+  public void testGetOut() {
+    assertThat(network.getOut(0)).containsExactlyInAnyOrder(edge01, edge02a, edge02b);
+    assertThat(network.getOut(1)).containsExactly(edge13);
+    assertThat(network.getOut(2)).containsExactlyInAnyOrder(edge23a, edge23b);
+    assertThat(network.getOut(3)).isEmpty();
+    assertThat(network.getOut(4)).isEmpty();
+    assertThat(network.getOut(5)).containsExactly(edge56);
+    assertThat(network.getOut(6)).containsExactlyInAnyOrder(edge65a, edge65b);
+    assertThat(network.getOut(7)).containsExactly(edge77);
+  }
+
+  @Test
+  public void testGetIn() {
+    assertThat(network.getIn(0)).isEmpty();
+    assertThat(network.getIn(1)).containsExactly(edge01);
+    assertThat(network.getIn(2)).containsExactlyInAnyOrder(edge02a, edge02b);
+    assertThat(network.getIn(3)).containsExactlyInAnyOrder(edge13, edge23a, edge23b);
+    assertThat(network.getIn(4)).isEmpty();
+    assertThat(network.getIn(5)).containsExactlyInAnyOrder(edge65a, edge65b);
+    assertThat(network.getIn(6)).containsExactly(edge56);
+    assertThat(network.getIn(7)).containsExactly(edge77);
+  }
+
+  @Test
+  public void testGetEdges() {
+    assertThat(network.getEdges(0, 1)).containsExactly(edge01);
+    assertThat(network.getEdges(0, 2)).containsExactlyInAnyOrder(edge02a, edge02b);
+    assertThat(network.getEdges(1, 0)).isEmpty();
+    assertThat(network.getEdges(7, 7)).containsExactly(edge77);
+  }
+
+  @Test
+  public void testGetReverses() {
+    assertThat(network.getReverses(edge56)).containsExactlyInAnyOrder(edge65a, edge65b);
+    assertThat(network.getReverses(edge65a)).containsExactly(edge56);
+    assertThat(network.getReverses(edge01)).isEmpty();
+    assertThat(network.getReverses(edge77)).containsExactly(edge77);
+  }
+
+}

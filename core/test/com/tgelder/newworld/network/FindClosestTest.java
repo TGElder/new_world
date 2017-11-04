@@ -23,13 +23,13 @@ public class FindClosestTest {
     ImmutableList<Integer> nodes = generateNodes(3);
 
     ImmutableList<Edge<Integer>> edges = ImmutableList.of(
-            new Edge<>(nodes.get(0), nodes.get(1), 1),
-            new Edge<>(nodes.get(0), nodes.get(2), 2)
+            new Edge<>(0, 1, 1),
+            new Edge<>(0, 2, 2)
     );
 
     network = new Network<>(nodes, edges);
 
-    assertThat(network.findClosest(nodes.get(0), predicate)).containsExactly(nodes.get(2));
+    assertThat(network.findClosest(0, predicate)).containsExactly(2);
   }
 
   @Test
@@ -37,13 +37,13 @@ public class FindClosestTest {
     ImmutableList<Integer> nodes = generateNodes(3);
 
     ImmutableList<Edge<Integer>> edges = ImmutableList.of(
-            new Edge<>(nodes.get(0), nodes.get(0), 1),
-            new Edge<>(nodes.get(0), nodes.get(2), 2)
+            new Edge<>(0, 0, 1),
+            new Edge<>(0, 2, 2)
     );
 
     network = new Network<>(nodes, edges);
 
-    assertThat(network.findClosest(nodes.get(0), predicate)).containsExactly(nodes.get(2));
+    assertThat(network.findClosest(0, predicate)).containsExactly(2);
   }
 
   @Test
@@ -51,14 +51,14 @@ public class FindClosestTest {
     ImmutableList<Integer> nodes = generateNodes(3);
 
     ImmutableList<Edge<Integer>> edges = ImmutableList.of(
-            new Edge<>(nodes.get(0), nodes.get(1), 1),
-            new Edge<>(nodes.get(1), nodes.get(0), 1),
-            new Edge<>(nodes.get(0), nodes.get(2), 3)
+            new Edge<>(0, 1, 1),
+            new Edge<>(1, 0, 1),
+            new Edge<>(0, 2, 3)
     );
 
     network = new Network<>(nodes, edges);
 
-    assertThat(network.findClosest(nodes.get(0), predicate)).containsExactly(nodes.get(2));
+    assertThat(network.findClosest(0, predicate)).containsExactly(2);
   }
 
   @Test
@@ -66,27 +66,27 @@ public class FindClosestTest {
     ImmutableList<Integer> nodes = generateNodes(5);
 
     ImmutableList<Edge<Integer>> edges = ImmutableList.of(
-            new Edge<>(nodes.get(2), nodes.get(0), 1),
-            new Edge<>(nodes.get(0), nodes.get(4), 2)
+            new Edge<>(2, 0, 1),
+            new Edge<>(0, 4, 2)
     );
 
     network = new Network<>(nodes, edges);
 
-    assertThat(network.findClosest(nodes.get(0), predicate)).containsExactly(nodes.get(4));
+    assertThat(network.findClosest(0, predicate)).containsExactly(4);
   }
 
   @Test
   public void twoEquidistantNodes() {
-    ImmutableList<Integer> nodes = generateNodes(5);
+    ImmutableList<Integer> nodes = generateNodes(3);
 
     ImmutableList<Edge<Integer>> edges = ImmutableList.of(
-            new Edge<>(nodes.get(0), nodes.get(2), 1),
-            new Edge<>(nodes.get(0), nodes.get(4), 1)
+            new Edge<>(1, 0, 1),
+            new Edge<>(1, 2, 1)
     );
 
     network = new Network<>(nodes, edges);
 
-    assertThat(network.findClosest(nodes.get(0), predicate)).containsExactlyInAnyOrder(nodes.get(2), nodes.get(4));
+    assertThat(network.findClosest(1, predicate)).containsExactlyInAnyOrder(0, 2);
   }
 
   @Test
@@ -94,15 +94,15 @@ public class FindClosestTest {
     ImmutableList<Integer> nodes = generateNodes(7);
 
     ImmutableList<Edge<Integer>> edges = ImmutableList.of(
-            new Edge<>(nodes.get(0), nodes.get(2), 10),
-            new Edge<>(nodes.get(0), nodes.get(4), 10),
-            new Edge<>(nodes.get(0), nodes.get(1), 1),
-            new Edge<>(nodes.get(1), nodes.get(6), 1)
+            new Edge<>(0, 2, 10),
+            new Edge<>(0, 4, 10),
+            new Edge<>(0, 1, 1),
+            new Edge<>(1, 6, 1)
     );
 
     network = new Network<>(nodes, edges);
 
-    assertThat(network.findClosest(nodes.get(0), predicate)).containsExactly(nodes.get(6));
+    assertThat(network.findClosest(0, predicate)).containsExactly(6);
   }
 
   @Test
@@ -110,13 +110,13 @@ public class FindClosestTest {
     ImmutableList<Integer> nodes = generateNodes(3);
 
     ImmutableList<Edge<Integer>> edges = ImmutableList.of(
-            new Edge<>(nodes.get(1), nodes.get(0), 1),
-            new Edge<>(nodes.get(2), nodes.get(0), 1)
+            new Edge<>(1, 0, 1),
+            new Edge<>(2, 0, 1)
     );
 
     network = new Network<>(nodes, edges);
 
-    assertThat(network.findClosest(nodes.get(0), predicate)).isEmpty();
+    assertThat(network.findClosest(0, predicate)).isEmpty();
   }
 
   @Test
@@ -125,7 +125,23 @@ public class FindClosestTest {
 
     network = new Network<>(nodes, ImmutableList.of());
 
-    assertThat(network.findClosest(nodes.get(0), predicate)).isEmpty();
+    assertThat(network.findClosest(0, predicate)).isEmpty();
+  }
+
+  @Test
+  public void duplicateEdges() {
+    ImmutableList<Integer> nodes = generateNodes(3);
+
+    ImmutableList<Edge<Integer>> edges = ImmutableList.of(
+            new Edge<>(1, 0, 4),
+            new Edge<>(1, 0, 1),
+            new Edge<>(1, 2, 2),
+            new Edge<>(1, 2, 1)
+    );
+
+    network = new Network<>(nodes, ImmutableList.of());
+
+    assertThat(network.findClosest(1, predicate)).containsExactlyInAnyOrder(0, 2);
   }
 
 }
