@@ -1,6 +1,6 @@
 package com.tgelder.newworld.network;
 
-import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -10,25 +10,25 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class NetworkTest {
 
-  private Network<Integer> network;
-  private ImmutableList<Integer> nodes;
-  private Edge<Integer> edge01;
-  private Edge<Integer> edge02a;
-  private Edge<Integer> edge02b;
-  private Edge<Integer> edge13;
-  private Edge<Integer> edge23a;
-  private Edge<Integer> edge23b;
-  private Edge<Integer> edge56;
-  private Edge<Integer> edge65a;
-  private Edge<Integer> edge65b;
-  private Edge<Integer> edge77;
+  private static Network<Integer> network;
+  private static ImmutableSet<Integer> nodes;
+  private static Edge<Integer> edge01;
+  private static Edge<Integer> edge02a;
+  private static Edge<Integer> edge02b;
+  private static Edge<Integer> edge13;
+  private static Edge<Integer> edge23a;
+  private static Edge<Integer> edge23b;
+  private static Edge<Integer> edge56;
+  private static Edge<Integer> edge65a;
+  private static Edge<Integer> edge65b;
+  private static Edge<Integer> edge77;
 
-  private ImmutableList<Integer> generateNodes(int howMany) {
-    return IntStream.range(0, howMany).boxed().collect(ImmutableList.toImmutableList());
+  private static ImmutableSet<Integer> generateNodes(int howMany) {
+    return IntStream.range(0, howMany).boxed().collect(ImmutableSet.toImmutableSet());
   }
 
   @BeforeClass
-  public void beforeClass() {
+  public static void beforeClass() {
     nodes = generateNodes(8);
 
     edge01 = new Edge<>(0, 1, 1);
@@ -43,7 +43,7 @@ public class NetworkTest {
     edge77 = new Edge<>(7, 7, 1);
 
     network = new Network<>(nodes,
-            ImmutableList.of(edge01, edge02a, edge02b, edge13, edge23a, edge23b, edge56, edge65a, edge65b, edge77));
+            ImmutableSet.of(edge01, edge02a, edge02b, edge13, edge23a, edge23b, edge56, edge65a, edge65b, edge77));
   }
 
   @Test
@@ -53,8 +53,8 @@ public class NetworkTest {
     assertThat(network.getBelow(2)).containsExactly(3);
     assertThat(network.getBelow(3)).isEmpty();
     assertThat(network.getBelow(4)).isEmpty();
-    assertThat(network.getBelow(5)).containsExactly(5);
-    assertThat(network.getBelow(6)).containsExactly(6);
+    assertThat(network.getBelow(5)).containsExactly(6);
+    assertThat(network.getBelow(6)).containsExactly(5);
     assertThat(network.getBelow(7)).containsExactly(7);
   }
 
@@ -65,8 +65,8 @@ public class NetworkTest {
     assertThat(network.getAbove(2)).containsExactly(0);
     assertThat(network.getAbove(3)).containsExactlyInAnyOrder(1, 2);
     assertThat(network.getAbove(4)).isEmpty();
-    assertThat(network.getAbove(5)).containsExactly(5);
-    assertThat(network.getAbove(6)).containsExactly(6);
+    assertThat(network.getAbove(5)).containsExactly(6);
+    assertThat(network.getAbove(6)).containsExactly(5);
     assertThat(network.getAbove(7)).containsExactly(7);
   }
 

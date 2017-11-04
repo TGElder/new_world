@@ -1,51 +1,45 @@
 package com.tgelder.newworld.network;
 
-import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import java.util.Collection;
+import java.util.Set;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 @AllArgsConstructor
 public class Network<T> {
 
-  private final ImmutableList<T> nodes;
-  private final ImmutableList<Edge<T>> edges;
-//
-//  public Network(ImmutableList<T> nodes, ImmutableList<Edge<T>> edges) {
-//    this.nodes = nodes;
-//    this.edges = edges;
-//
-//    for (Edge edges : )
-//  }
+  private final ImmutableSet<T> nodes;
+  private final ImmutableSet<Edge<T>> edges;
 
-  public Collection<T> getBelow(T node) {
-    return null;
+  public Stream<T> getBelow(T node) {
+    return getOut(node).map(e -> e.getTo()).distinct();
   }
 
-  public Collection<T> getAbove(T node) {
-    return null;
+  public Stream<T> getAbove(T node) {
+    return getIn(node).map(e -> e.getFrom()).distinct();
   }
 
-  public Collection<Edge<T>> getOut(T node) {
-    return null;
+  public Stream<Edge<T>> getOut(T node) {
+    return edges.stream().filter(e -> e.getFrom().equals(node));
   }
 
-  public Collection<Edge<T>> getIn(T node) {
-    return null;
+  public Stream<Edge<T>> getIn(T node) {
+    return edges.stream().filter(e -> e.getTo().equals(node));
   }
 
-  public Collection<Edge<T>> getEdges(T from, T to) {
-    return null;
+  public Stream<Edge<T>> getEdges(T from, T to) {
+    return edges.stream().filter(e -> e.getFrom().equals(from) && e.getTo().equals(to));
   }
 
-  public Collection<Edge<T>> getReverses(Edge<T> edge) {
-    return null;
+  public Stream<Edge<T>> getReverses(Edge<T> edge) {
+    return getEdges(edge.getTo(), edge.getFrom());
   }
 
 
-  public Collection<T> findClosest(T start, Predicate<T> stoppingCondition) {
+  public Set<T> findClosest(T start, Predicate<T> stoppingCondition) {
 //
 //    List<T> open = new ArrayList<T> ();
 //    Set<T> closed = new HashSet<T> ();
