@@ -9,6 +9,6 @@ public class Edge<T> {
 
   private final T from;
   private final T to;
-  private int cost;
+  private double cost;
 
 }

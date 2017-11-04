@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @AllArgsConstructor
+@Getter
 public class Network<T> {
 
   private final ImmutableSet<T> nodes;
@@ -40,17 +41,17 @@ public class Network<T> {
   }
 
   private Set<T> search(T start, Search<T> search) {
-    Map<T, Integer> open = new HashMap<>();
+    Map<T, Double> open = new HashMap<>();
     Set<T> closed = new HashSet<>();
 
-    open.put(start, 0);
+    open.put(start, 0.0);
 
     Set<T> out = new HashSet<>();
     int closestCost = 0;
 
     while (!open.isEmpty()) {
-      T focus = Collections.min(open.keySet(), Comparator.comparingInt(open::get));
-      int focusCost = open.get(focus);
+      T focus = Collections.min(open.keySet(), Comparator.comparingDouble(open::get));
+      double focusCost = open.get(focus);
 
       open.remove(focus);
       closed.add(focus);
@@ -64,10 +65,10 @@ public class Network<T> {
 
       Map<T, Optional<Edge<T>>> neighbours = getOut(focus)
               .filter(e -> !closed.contains(e.getTo()))
-              .collect(Collectors.groupingBy(Edge::getTo, Collectors.minBy(Comparator.comparingInt(Edge::getCost))));
+              .collect(Collectors.groupingBy(Edge::getTo, Collectors.minBy(Comparator.comparingDouble(Edge::getCost))));
 
       neighbours.forEach((node, edgeOptional) -> {
-        int cost = focusCost + edgeOptional.get().getCost();
+        double cost = focusCost + edgeOptional.get().getCost();
         open.merge(node, cost, Math::min);
       });
     }
@@ -80,10 +81,10 @@ public class Network<T> {
     return search(start, new Search<T>() {
 
       private boolean done = false;
-      private Integer closestCost = null;
+      private Double closestCost = null;
 
       @Override
-      public boolean take(T node, int focusCost) {
+      public boolean take(T node, double focusCost) {
         if ((!node.equals(start)) && stoppingCondition.test(node)) {
           if (closestCost == null) {
             closestCost = focusCost;
@@ -114,7 +115,7 @@ public class Network<T> {
       private boolean done = false;
 
       @Override
-      public boolean take(T node, int focusCost) {
+      public boolean take(T node, double focusCost) {
         if (focusCost >= maxCost) {
           done = true;
           return false;
@@ -131,7 +132,7 @@ public class Network<T> {
   }
 
   private interface Search<T> {
-    boolean take(T node, int focusCost);
+    boolean take(T node, double focusCost);
 
     boolean done();
   }
