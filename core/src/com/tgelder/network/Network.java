@@ -56,6 +56,7 @@ public class Network<T> {
       open.remove(focus);
       closed.add(focus);
 
+      System.out.println("Searching " + focus);
       if (search.take(focus, focusCost)) {
         out.add(focus);
       }

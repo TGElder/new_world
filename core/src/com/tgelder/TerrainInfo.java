@@ -2,13 +2,15 @@ package com.tgelder;
 
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.input.GestureDetector.GestureListener;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.tgelder.downhill.terrain.Terrain;
-import lombok.AllArgsConstructor;
+import com.tgelder.network.Network;
+import com.tgelder.newworld.NetworkFromTerrain;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+
+import java.util.Collections;
+import java.util.Set;
 
 @RequiredArgsConstructor
 public class TerrainInfo implements InputProcessor {
@@ -17,12 +19,28 @@ public class TerrainInfo implements InputProcessor {
   private final OrthographicCamera camera;
   private final Vector3 screenCoords = new Vector3();
 
+  private final Network<Integer> network;
+  private final static int[] neighbourDxs = {-1, -1, 0, 1, 1, 1, 0, -1};
+  private final static int[] neighbourDys = {0, -1, -1, -1, 0, 1, 1, 1};
+
+  public TerrainInfo(Terrain terrain, OrthographicCamera camera) {
+    this(terrain,
+            camera,
+            NetworkFromTerrain.createNetwork(terrain.getAltitudes(),
+                    d -> Math.abs(d),
+                    neighbourDxs,
+                    neighbourDys
+            ));
+  }
+
   @Getter
   private int x = 0;
   @Getter
   private int y = 0;
   @Getter
   private double altitude = 0;
+  @Getter
+  private Set<Integer> nearestNodes = Collections.emptySet();
 
   @Override
   public boolean keyDown(int keycode) {
@@ -63,9 +81,11 @@ public class TerrainInfo implements InputProcessor {
 
     if (terrain.inBounds(x, y)) {
       altitude = terrain.getAltitudes()[x][y];
+      nearestNodes = network.getNodes((y * terrain.getWidth()) + x, 10);
     }
     else {
       altitude = -1;
+      nearestNodes = Collections.emptySet();
     }
 
     return false;
