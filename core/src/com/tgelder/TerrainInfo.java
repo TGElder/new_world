@@ -24,13 +24,25 @@ public class TerrainInfo implements InputProcessor {
   private final static int[] neighbourDys = {0, -1, -1, -1, 0, 1, 1, 1};
 
   public TerrainInfo(Terrain terrain, OrthographicCamera camera) {
-    this(terrain,
-            camera,
-            NetworkFromTerrain.createNetwork(terrain.getAltitudes(),
-                    d -> Math.abs(d),
-                    neighbourDxs,
-                    neighbourDys
-            ));
+    this.terrain = terrain;
+    this.camera = camera;
+
+    Network<Integer> terrainNetwork = NetworkFromTerrain.createNetwork(terrain.getAltitudes(),
+            d -> Math.abs(d),
+            neighbourDxs,
+            neighbourDys);
+
+    boolean[][] water = new boolean[terrain.getWidth()][terrain.getWidth()];
+
+    for (int x = 0; x < terrain.getWidth(); x++) {
+      for (int y = 0; y < terrain.getWidth(); y++) {
+        if (terrain.getFlow()[x][y] >= terrain.getWidth()) {
+          water[x][y] = true;
+        }
+      }
+    }
+
+    Network<Integer> waterNetwork = Network
   }
 
   @Getter

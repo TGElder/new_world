@@ -1,10 +1,10 @@
 package com.tgelder.network;
 
 import com.google.common.collect.ImmutableSet;
+import com.tgelder.TestUtils;
 import org.junit.Test;
 
 import java.util.function.Predicate;
-import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -14,13 +14,9 @@ public class FindClosestTest {
 
   private final Predicate<Integer> predicate = i -> i % 2 == 0;
 
-  private ImmutableSet<Integer> generateNodes(int howMany) {
-    return IntStream.range(0, howMany).boxed().collect(ImmutableSet.toImmutableSet());
-  }
-
   @Test
   public void shouldNotReturnNodeFailingPredicate() {
-    ImmutableSet<Integer> nodes = generateNodes(3);
+    ImmutableSet<Integer> nodes = TestUtils.generateNodes(3);
 
     ImmutableSet<Edge<Integer>> edges = ImmutableSet.of(
             new Edge<>(0, 1, 1),
@@ -34,7 +30,7 @@ public class FindClosestTest {
 
   @Test
   public void shouldNotReturnStartingNode() {
-    ImmutableSet<Integer> nodes = generateNodes(3);
+    ImmutableSet<Integer> nodes = TestUtils.generateNodes(3);
 
     ImmutableSet<Edge<Integer>> edges = ImmutableSet.of(
             new Edge<>(0, 0, 1),
@@ -48,7 +44,7 @@ public class FindClosestTest {
 
   @Test
   public void shouldNotReturnStartingNodeVariant() {
-    ImmutableSet<Integer> nodes = generateNodes(3);
+    ImmutableSet<Integer> nodes = TestUtils.generateNodes(3);
 
     ImmutableSet<Edge<Integer>> edges = ImmutableSet.of(
             new Edge<>(0, 1, 1),
@@ -63,7 +59,7 @@ public class FindClosestTest {
 
   @Test
   public void shouldNotTravelBackwards() {
-    ImmutableSet<Integer> nodes = generateNodes(5);
+    ImmutableSet<Integer> nodes = TestUtils.generateNodes(5);
 
     ImmutableSet<Edge<Integer>> edges = ImmutableSet.of(
             new Edge<>(2, 0, 1),
@@ -77,7 +73,7 @@ public class FindClosestTest {
 
   @Test
   public void twoEquidistantNodes() {
-    ImmutableSet<Integer> nodes = generateNodes(3);
+    ImmutableSet<Integer> nodes = TestUtils.generateNodes(3);
 
     ImmutableSet<Edge<Integer>> edges = ImmutableSet.of(
             new Edge<>(1, 0, 1),
@@ -91,7 +87,7 @@ public class FindClosestTest {
 
   @Test
   public void closestRequiresMoreEdges() {
-    ImmutableSet<Integer> nodes = generateNodes(7);
+    ImmutableSet<Integer> nodes = TestUtils.generateNodes(7);
 
     ImmutableSet<Edge<Integer>> edges = ImmutableSet.of(
             new Edge<>(0, 2, 10),
@@ -107,7 +103,7 @@ public class FindClosestTest {
 
   @Test
   public void noReachableNodeSatisfyingPredicate() {
-    ImmutableSet<Integer> nodes = generateNodes(3);
+    ImmutableSet<Integer> nodes = TestUtils.generateNodes(3);
 
     ImmutableSet<Edge<Integer>> edges = ImmutableSet.of(
             new Edge<>(1, 0, 1),
@@ -121,7 +117,7 @@ public class FindClosestTest {
 
   @Test
   public void nodeWithNoEdges() {
-    ImmutableSet<Integer> nodes = generateNodes(1);
+    ImmutableSet<Integer> nodes = TestUtils.generateNodes(1);
 
     network = new Network<>(nodes, ImmutableSet.of());
 
@@ -130,7 +126,7 @@ public class FindClosestTest {
 
   @Test
   public void duplicateEdges() {
-    ImmutableSet<Integer> nodes = generateNodes(3);
+    ImmutableSet<Integer> nodes = TestUtils.generateNodes(3);
 
     ImmutableSet<Edge<Integer>> edges = ImmutableSet.of(
             new Edge<>(1, 0, 4),

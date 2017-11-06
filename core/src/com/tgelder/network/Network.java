@@ -59,6 +59,15 @@ public class Network<T> {
     return getEdges(edge.getTo(), edge.getFrom());
   }
 
+  public Network<T> merge(Network<T> other) {
+    ImmutableSet<T> nodes = ImmutableSet.<T>builder().addAll(getNodes()).addAll(other.getNodes()).build();
+    ImmutableSet.Builder<Edge<T>> edgeBuilder = ImmutableSet.<Edge<T>>builder().addAll(other.getEdges());
+    getEdges().stream()
+            .filter(e -> other.getEdges(e.getFrom(), e.getTo()).count() == 0)
+            .forEach(edgeBuilder::add);
+    return new Network(nodes, edgeBuilder.build());
+  }
+
   private Set<T> search(T start, Search<T> search) {
     Map<T, Double> open = new HashMap<>();
     Set<T> closed = new HashSet<>();

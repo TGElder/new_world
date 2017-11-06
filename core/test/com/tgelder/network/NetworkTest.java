@@ -1,10 +1,9 @@
 package com.tgelder.network;
 
 import com.google.common.collect.ImmutableSet;
+import com.tgelder.TestUtils;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -24,13 +23,9 @@ public class NetworkTest {
   private static Edge<Integer> edge65b;
   private static Edge<Integer> edge77;
 
-  private static ImmutableSet<Integer> generateNodes(int howMany) {
-    return IntStream.range(0, howMany).boxed().collect(ImmutableSet.toImmutableSet());
-  }
-
   @BeforeClass
   public static void beforeClass() {
-    nodes = generateNodes(8);
+    nodes = TestUtils.generateNodes(8);
 
     edge01 = new Edge<>(0, 1, 1);
     edge02a = new Edge<>(0, 2, 1);
@@ -113,7 +108,7 @@ public class NetworkTest {
 
   @Test
   public void testGetNodes() {
-    ImmutableSet<Integer> nodes = generateNodes(10);
+    ImmutableSet<Integer> nodes = TestUtils.generateNodes(10);
     ImmutableSet<Edge<Integer>> edges = ImmutableSet.of(
             new Edge(0, 1, 1),
             new Edge(0, 6, 5),
@@ -129,6 +124,53 @@ public class NetworkTest {
     Network<Integer> network = new Network<>(nodes, edges);
 
     assertThat(network.getNodes(0, 6)).containsExactlyInAnyOrder(0, 1, 3, 4, 5, 6);
+  }
+
+  @Test
+  public void testMerge() {
+    ImmutableSet<Integer> nodesA = TestUtils.generateNodes(3);
+    ImmutableSet<Edge<Integer>> edgesA = ImmutableSet.of(
+            new Edge(0, 1, 1),
+            new Edge(0, 2, 1),
+            new Edge(1, 0, 1),
+            new Edge(1, 3, 1),
+            new Edge(2, 0, 1),
+            new Edge(2, 3, 1),
+            new Edge(3, 1, 1),
+            new Edge(3, 2, 1)
+    );
+
+    Network<Integer> networkA = new Network(nodesA, edgesA);
+
+    ImmutableSet<Integer> nodesB = TestUtils.generateNodes(4);
+    ImmutableSet<Edge<Integer>> edgesB = ImmutableSet.of(
+            new Edge(0, 2, 2),
+            new Edge(2, 0, 2),
+            new Edge(1, 3, 2),
+            new Edge(2, 3, 2),
+            new Edge(3, 1, 2),
+            new Edge(3, 2, 2)
+    );
+
+    Network<Integer> networkB = new Network(nodesB, edgesB);
+
+    Network<Integer> networkMerged = networkA.merge(networkB);
+
+    assertThat(networkMerged.getOut(0).count()).isEqualTo(2);
+    assertThat(networkMerged.getEdges(0, 1).findFirst().get().getCost()).isEqualTo(1);
+    assertThat(networkMerged.getEdges(0, 2).findFirst().get().getCost()).isEqualTo(2);
+
+    assertThat(networkMerged.getOut(0).count()).isEqualTo(2);
+    assertThat(networkMerged.getEdges(1, 0).findFirst().get().getCost()).isEqualTo(1);
+    assertThat(networkMerged.getEdges(1, 3).findFirst().get().getCost()).isEqualTo(2);
+
+    assertThat(networkMerged.getOut(0).count()).isEqualTo(2);
+    assertThat(networkMerged.getEdges(2, 0).findFirst().get().getCost()).isEqualTo(2);
+    assertThat(networkMerged.getEdges(2, 3).findFirst().get().getCost()).isEqualTo(2);
+
+    assertThat(networkMerged.getOut(0).count()).isEqualTo(2);
+    assertThat(networkMerged.getEdges(3, 1).findFirst().get().getCost()).isEqualTo(2);
+    assertThat(networkMerged.getEdges(3, 2).findFirst().get().getCost()).isEqualTo(2);
   }
 
 }

@@ -9,6 +9,22 @@ import java.util.stream.IntStream;
 
 public class NetworkFromTerrain {
 
+  private static boolean inBounds(double[][] matrix, int x, int y) {
+    return x >= 0 && y >= 0 && x < matrix.length && y < matrix[0].length;
+  }
+
+  private static Integer getIndex(double[][] matrix, int x, int y) {
+    return (y * matrix.length) + x;
+  }
+
+  private static boolean inBounds(boolean[][] matrix, int x, int y) {
+    return x >= 0 && y >= 0 && x < matrix.length && y < matrix[0].length;
+  }
+
+  private static Integer getIndex(boolean[][] matrix, int x, int y) {
+    return (y * matrix.length) + x;
+  }
+
   public static Network<Integer> createNetwork(double[][] altitudes,
                                                Function<Double, Double> gradientToCost,
                                                int[] neighbourDxs,
@@ -20,9 +36,7 @@ public class NetworkFromTerrain {
 
     ImmutableSet.Builder<Edge<Integer>> edgeBuilder = ImmutableSet.builder();
 
-    System.out.println("Building network");
     for (int x = 0; x < altitudes.length; x++) {
-      System.out.println(x);
       for (int y = 0; y < altitudes[0].length; y++) {
 
         for (int n = 0; n < neighbourDxs.length; n++) {
@@ -46,13 +60,47 @@ public class NetworkFromTerrain {
     return new Network<>(nodes, edgeBuilder.build());
   }
 
-  private static boolean inBounds(double[][] altitudes, int x, int y) {
-    return x >= 0 && y >= 0 && x < altitudes.length && y < altitudes[0].length;
-  }
+  public static Network<Integer> createWaterNetwork(boolean[][] water,
+                                                    double waterCost,
+                                                    double exitingWaterCost,
+                                                    int[] neighbourDxs,
+                                                    int[] neighbourDys) {
 
-  private static Integer getIndex(double[][] altitudes, int x, int y) {
-    return (y * altitudes.length) + x;
-  }
+    ImmutableSet<Integer> nodes = IntStream
+            .range(0, water.length * water[0].length)
+            .boxed()
+            .collect(ImmutableSet.toImmutableSet());
 
+    ImmutableSet.Builder<Edge<Integer>> edgeBuilder = ImmutableSet.builder();
+
+
+    for (int x = 0; x < water.length; x++) {
+      for (int y = 0; y < water[0].length; y++) {
+        if (water[x][y]) {
+          for (int n = 0; n < neighbourDxs.length; n++) {
+
+            int dx = neighbourDxs[n];
+            int dy = neighbourDys[n];
+
+            int nx = x + dx;
+            int ny = y + dy;
+
+            if (inBounds(water, nx, ny)) {
+
+              if (water[nx][ny]) {
+                edgeBuilder.add(new Edge<>(getIndex(water, x, y), getIndex(water, nx, ny), waterCost));
+              } else {
+                edgeBuilder.add(new Edge<>(getIndex(water, x, y), getIndex(water, nx, ny), exitingWaterCost));
+                edgeBuilder.add(new Edge<>(getIndex(water, nx, ny), getIndex(water, x, y), exitingWaterCost));
+              }
+            }
+          }
+        }
+      }
+
+    }
+
+    return new Network<>(nodes, edgeBuilder.build());
+  }
 
 }
