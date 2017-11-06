@@ -20,7 +20,9 @@ public class NetworkFromTerrain {
 
     ImmutableSet.Builder<Edge<Integer>> edgeBuilder = ImmutableSet.builder();
 
+    System.out.println("Building network");
     for (int x = 0; x < altitudes.length; x++) {
+      System.out.println(x);
       for (int y = 0; y < altitudes[0].length; y++) {
 
         for (int n = 0; n < neighbourDxs.length; n++) {

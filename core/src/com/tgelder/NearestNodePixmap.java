@@ -18,7 +18,7 @@ public class NearestNodePixmap {
   public void draw(Terrain terrain, Set<Integer> nodes) {
     pixmap.setColor(0, 0, 0, 0);
     pixmap.fill();
-    pixmap.setColor(1, 1, 0, 1f);
+    pixmap.setColor(1, 1, 0, 0.5f);
     for (Integer node : nodes) {
       int x = node % terrain.getWidth();
       int y = node / terrain.getWidth();

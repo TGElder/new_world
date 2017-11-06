@@ -74,18 +74,20 @@ public class TerrainInfo implements InputProcessor {
 
   @Override
   public boolean mouseMoved(int screenX, int screenY) {
-    screenCoords.set(screenX, screenY, 0);
-    Vector3 terrainCoords = camera.unproject(screenCoords);
-    x = (int)(terrainCoords.x);
-    y = terrain.getWidth() - (int)(terrainCoords.y);
 
-    if (terrain.inBounds(x, y)) {
-      altitude = terrain.getAltitudes()[x][y];
-      nearestNodes = network.getNodes((y * terrain.getWidth()) + x, 10);
-    }
-    else {
-      altitude = -1;
-      nearestNodes = Collections.emptySet();
+    if (screenX != screenCoords.x || screenY != screenCoords.y) {
+      screenCoords.set(screenX, screenY, 0);
+      Vector3 terrainCoords = camera.unproject(screenCoords);
+      x = (int) (terrainCoords.x);
+      y = terrain.getWidth() - (int) (terrainCoords.y);
+
+      if (terrain.inBounds(x, y)) {
+        altitude = terrain.getAltitudes()[x][y];
+        nearestNodes = network.getNodes((y * terrain.getWidth()) + x, 25);
+      } else {
+        altitude = -1;
+        nearestNodes = Collections.emptySet();
+      }
     }
 
     return false;

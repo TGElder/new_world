@@ -36,7 +36,7 @@ public class TerrainViewer extends ApplicationAdapter {
     batch2 = new SpriteBatch();
 
 
-    terrain = new Terrain(1986, 8, 3000);
+    terrain = new Terrain(1990, 10, 3000);
     cam = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
     cam.position.set(cam.viewportWidth / 2f, cam.viewportHeight / 2f, 0);
@@ -53,8 +53,6 @@ public class TerrainViewer extends ApplicationAdapter {
     nearestNodeSprite = new Sprite(nearestNodeTexture);
 
     updateSprites();
-
-
 
     InputMultiplexer multiplexer = new InputMultiplexer();
     multiplexer.addProcessor(new GestureDetector(new OrphographicCameraController(cam)));
@@ -90,10 +88,10 @@ public class TerrainViewer extends ApplicationAdapter {
     nearestNodeSprite.draw(batch);
     batch.end();
 
-    batch2.begin();
-    font.draw(batch2, terrainInfo.getAltitude() + "\n" + terrainInfo.getX() + "\n" + terrainInfo.getY()
-            , 200, 200);
-    batch2.end();
+//    batch2.begin();
+//    font.draw(batch2, terrainInfo.getAltitude() + "\n" + terrainInfo.getX() + "\n" + terrainInfo.getY()
+//            , 200, 200);
+//    batch2.end();
 
   }
 

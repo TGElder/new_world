@@ -16,6 +16,15 @@ public class Network<T> {
   private final ImmutableSet<T> nodes;
   private final ImmutableSet<Edge<T>> edges;
 
+  private final Map<T, ImmutableSet<Edge<T>>> out;
+  private final Map<T, ImmutableSet<Edge<T>>> in;
+
+  public Network(ImmutableSet<T> nodes, ImmutableSet<Edge<T>> edges) {
+    this(nodes, edges,
+            edges.stream().collect(Collectors.groupingBy(Edge::getFrom, ImmutableSet.toImmutableSet())),
+            edges.stream().collect(Collectors.groupingBy(Edge::getTo, ImmutableSet.toImmutableSet())));
+  }
+
   public Stream<T> getBelow(T node) {
     return getOut(node).map(Edge::getTo).distinct();
   }
@@ -25,15 +34,25 @@ public class Network<T> {
   }
 
   public Stream<Edge<T>> getOut(T node) {
-    return edges.stream().filter(e -> e.getFrom().equals(node));
+    Set<Edge<T>> edges = out.get(node);
+    if (edges == null) {
+      return Stream.empty();
+    } else {
+      return edges.stream();
+    }
   }
 
   public Stream<Edge<T>> getIn(T node) {
-    return edges.stream().filter(e -> e.getTo().equals(node));
+    Set<Edge<T>> edges = in.get(node);
+    if (edges == null) {
+      return Stream.empty();
+    } else {
+      return edges.stream();
+    }
   }
 
   public Stream<Edge<T>> getEdges(T from, T to) {
-    return edges.stream().filter(e -> e.getFrom().equals(from) && e.getTo().equals(to));
+    return getOut(from).filter(e -> e.getTo().equals(to));
   }
 
   public Stream<Edge<T>> getReverses(Edge<T> edge) {
@@ -47,7 +66,6 @@ public class Network<T> {
     open.put(start, 0.0);
 
     Set<T> out = new HashSet<>();
-    int closestCost = 0;
 
     while (!open.isEmpty()) {
       T focus = Collections.min(open.keySet(), Comparator.comparingDouble(open::get));
@@ -56,7 +74,6 @@ public class Network<T> {
       open.remove(focus);
       closed.add(focus);
 
-      System.out.println("Searching " + focus);
       if (search.take(focus, focusCost)) {
         out.add(focus);
       }
