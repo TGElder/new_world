@@ -3,6 +3,7 @@ package com.tgelder;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector3;
+import com.tgelder.downhill.terrain.DownhillException;
 import com.tgelder.downhill.terrain.Terrain;
 import com.tgelder.network.Network;
 import com.tgelder.newworld.NetworkFromTerrain;
@@ -34,15 +35,26 @@ public class TerrainInfo implements InputProcessor {
 
     boolean[][] water = new boolean[terrain.getWidth()][terrain.getWidth()];
 
-    for (int x = 0; x < terrain.getWidth(); x++) {
-      for (int y = 0; y < terrain.getWidth(); y++) {
-        if (terrain.getFlow()[x][y] >= terrain.getWidth()) {
-          water[x][y] = true;
+    try {
+
+      for (int x = 0; x < terrain.getWidth(); x++) {
+        for (int y = 0; y < terrain.getWidth(); y++) {
+          if (terrain.getFlow()[x][y] >= terrain.getWidth()) {
+            water[x][y] = true;
+          }
         }
       }
+    } catch (DownhillException e) {
+      throw new RuntimeException();
     }
 
-    Network<Integer> waterNetwork = Network
+    Network<Integer> waterNetwork = NetworkFromTerrain.createWaterNetwork(water,
+            0.1,
+            1,
+            neighbourDxs,
+            neighbourDys);
+
+    network = terrainNetwork.merge(waterNetwork);
   }
 
   @Getter
