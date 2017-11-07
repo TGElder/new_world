@@ -107,7 +107,7 @@ public class TerrainInfo implements InputProcessor {
 
       if (terrain.inBounds(x, y)) {
         altitude = terrain.getAltitudes()[x][y];
-        nearestNodes = network.getNodes((y * terrain.getWidth()) + x, 25);
+        nearestNodes = network.getNodes((y * terrain.getWidth()) + x, 10);
       } else {
         altitude = -1;
         nearestNodes = Collections.emptySet();

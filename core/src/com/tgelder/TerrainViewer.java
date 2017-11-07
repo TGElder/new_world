@@ -36,7 +36,7 @@ public class TerrainViewer extends ApplicationAdapter {
     batch2 = new SpriteBatch();
 
 
-    terrain = new Terrain(1990, 10, 3000);
+    terrain = new Terrain(1990, 9, 3000);
     cam = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
     cam.position.set(cam.viewportWidth / 2f, cam.viewportHeight / 2f, 0);

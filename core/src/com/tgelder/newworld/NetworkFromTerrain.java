@@ -36,7 +36,9 @@ public class NetworkFromTerrain {
 
     ImmutableSet.Builder<Edge<Integer>> edgeBuilder = ImmutableSet.builder();
 
+    System.out.println("Creating network");
     for (int x = 0; x < altitudes.length; x++) {
+      System.out.println(x);
       for (int y = 0; y < altitudes[0].length; y++) {
 
         for (int n = 0; n < neighbourDxs.length; n++) {
@@ -73,8 +75,9 @@ public class NetworkFromTerrain {
 
     ImmutableSet.Builder<Edge<Integer>> edgeBuilder = ImmutableSet.builder();
 
-
+    System.out.println("Creating water network");
     for (int x = 0; x < water.length; x++) {
+      System.out.println(x);
       for (int y = 0; y < water[0].length; y++) {
         if (water[x][y]) {
           for (int n = 0; n < neighbourDxs.length; n++) {

@@ -19,7 +19,7 @@ allprojects {
 
     version = '1.0'
     ext {
-        appName = "new_world"
+        appName = "newworld"
         gdxVersion = '1.9.6'
         roboVMVersion = '2.3.1'
         box2DLightsVersion = '1.4'
@@ -30,6 +30,7 @@ allprojects {
         lombokVersion = '1.16.16'
         jUnitVersion = '4.12'
         jAssertVersion = '3.8.0'
+        jmhVersion = '1.5.1'
     }
 
     repositories {
@@ -65,6 +66,8 @@ project(":core") {
         compile "org.projectlombok:lombok:$lombokVersion"
         testCompile "junit:junit:$jUnitVersion"
         testCompile "org.assertj:assertj-core:$jAssertVersion"
+        compile "org.openjdk.jmh:jmh-core:$jmhVersion"
+        compile "org.openjdk.jmh:jmh-generator-annprocess:$jmhVersion"
     }
 }
 
