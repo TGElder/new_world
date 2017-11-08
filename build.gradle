@@ -26,6 +26,7 @@ allprojects {
         ashleyVersion = '1.7.0'
         aiVersion = '1.8.0'
         downhillVersion = '1.0.3-SNAPSHOT'
+        networkVersion = '0.1-SNAPSHOT'
         guavaVersion = '23.0'
         lombokVersion = '1.16.16'
         jUnitVersion = '4.12'
@@ -62,6 +63,7 @@ project(":core") {
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
         compile "com.tgelder:downhill:$downhillVersion"
+        compile "com.tgelder:network:$networkVersion"
         compile "com.google.guava:guava:$guavaVersion"
         compile "org.projectlombok:lombok:$lombokVersion"
         testCompile "junit:junit:$jUnitVersion"
