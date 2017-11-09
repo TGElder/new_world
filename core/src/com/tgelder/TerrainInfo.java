@@ -5,7 +5,9 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector3;
 import com.tgelder.downhill.terrain.DownhillException;
 import com.tgelder.downhill.terrain.Terrain;
+import com.tgelder.network.FindNodes;
 import com.tgelder.network.Network;
+import com.tgelder.network.NetworkSearch;
 import com.tgelder.newworld.NetworkFromTerrain;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +31,7 @@ public class TerrainInfo implements InputProcessor {
     this.camera = camera;
 
     Network<Integer> terrainNetwork = NetworkFromTerrain.createNetwork(terrain.getAltitudes(),
-            d -> Math.abs(d),
+            Math::abs,
             neighbourDxs,
             neighbourDys);
 
@@ -107,7 +109,7 @@ public class TerrainInfo implements InputProcessor {
 
       if (terrain.inBounds(x, y)) {
         altitude = terrain.getAltitudes()[x][y];
-        nearestNodes = network.getNodes((y * terrain.getWidth()) + x, 10);
+        nearestNodes = NetworkSearch.search(network, (y * terrain.getWidth()) + x, new FindNodes<>(10));
       } else {
         altitude = -1;
         nearestNodes = Collections.emptySet();
