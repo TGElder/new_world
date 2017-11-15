@@ -49,7 +49,7 @@ public class AllocationTest {
                                            getNetwork(4));
 
     assertThat(allocation.getMetDemand()).containsExactly(1, 2, 3);
-    assertThat(allocation.getMetSupply()).containsExactly(3, 3, 3);
+    assertThat(allocation.getMetSupply()).containsExactly(4, 4, 4);
     assertThat(allocation.getUnmetDemand()).isEmpty();
     assertThat(allocation.getUnmetSupply()).containsExactly(4, 4);
   }
@@ -61,7 +61,7 @@ public class AllocationTest {
                                            getNetwork(4));
 
     assertThat(allocation.getMetDemand()).containsExactly(4, 4, 4);
-    assertThat(allocation.getMetSupply()).containsExactly(1, 2, 3);
+    assertThat(allocation.getMetSupply()).containsExactly(3, 2, 1);
     assertThat(allocation.getUnmetDemand()).containsExactly(4, 4);
     assertThat(allocation.getUnmetSupply()).isEmpty();
   }
@@ -81,13 +81,13 @@ public class AllocationTest {
 
   @Test
   public void firstInDemandListShouldHavePriority() {
-    Allocation allocation = new Allocation(ImmutableList.of(1, 10),
-                                           ImmutableMap.of(9, 1),
+    Allocation allocation = new Allocation(ImmutableList.of(0, 9),
+                                           ImmutableMap.of(8, 1),
                                            getNetwork(10));
 
-    assertThat(allocation.getMetDemand()).containsExactly(1);
-    assertThat(allocation.getMetSupply()).containsExactly(9);
-    assertThat(allocation.getUnmetDemand()).containsExactly(10);
+    assertThat(allocation.getMetDemand()).containsExactly(0);
+    assertThat(allocation.getMetSupply()).containsExactly(8);
+    assertThat(allocation.getUnmetDemand()).containsExactly(9);
     assertThat(allocation.getUnmetSupply()).isEmpty();
   }
 

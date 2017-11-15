@@ -42,9 +42,9 @@ public class Allocation {
         unmetDemandBuilder.add(d);
       } else {
         Set<Integer> candidates = NetworkSearch.search(network, d,
-                                                       new FindClosest<>(d, (n) -> free[n] > 0));
+                                                       new FindClosest<>((n) -> free[n] > 0));
 
-        if (candidates.isEmpty()) { //TODO test for this case
+        if (candidates.isEmpty()) {
           unmetDemandBuilder.add(d);
         } else {
           int choiceIndex = candidates.stream().findFirst().get();
@@ -56,7 +56,7 @@ public class Allocation {
       }
     }
 
-    for (int s = 0; s < supply.size(); s++) {
+    for (int s = 0; s < free.length; s++) {
       while (free[s] > 0) {
         unmetSupplyBuilder.add(s);
         free[s]--;
