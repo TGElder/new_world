@@ -19,6 +19,7 @@ public class TerrainViewer extends ApplicationAdapter {
   private SpriteBatch batch2;
   private Sprite sprite;
   private Sprite nearestNodeSprite;
+  private Sprite geographySprite;
   private BitmapFont font;
   private OrthographicCamera cam;
   private TerrainInfo terrainInfo;
@@ -26,8 +27,10 @@ public class TerrainViewer extends ApplicationAdapter {
   private final static HeightRenderer renderer = new HeightRenderer();
   private PixmapImage image;
   private NearestNodePixmap nearestNodePixmap;
+  private GeographyPixmap geographyPixmap;
   private Texture texture;
   private Texture nearestNodeTexture;
+  private Texture geographyTexture;
 
   @Override
   public void create () {
@@ -51,6 +54,10 @@ public class TerrainViewer extends ApplicationAdapter {
     nearestNodePixmap = new NearestNodePixmap(terrain.getWidth(), terrain.getWidth());
     nearestNodeTexture = new Texture(terrain.getWidth(), terrain.getWidth(), Pixmap.Format.RGBA8888);
     nearestNodeSprite = new Sprite(nearestNodeTexture);
+
+    geographyPixmap = new GeographyPixmap(terrain.getWidth(), terrain.getWidth());
+    geographyTexture = new Texture(terrain.getWidth(), terrain.getWidth(), Pixmap.Format.RGBA8888);
+    geographySprite = new Sprite(geographyTexture);
 
     updateSprites();
 
@@ -86,6 +93,8 @@ public class TerrainViewer extends ApplicationAdapter {
     sprite.draw(batch);
     nearestNodeSprite.setPosition(0, 0);
     nearestNodeSprite.draw(batch);
+    geographySprite.setPosition(0, 0);
+    geographySprite.draw(batch);
     batch.end();
 
 //    batch2.begin();
@@ -114,6 +123,10 @@ public class TerrainViewer extends ApplicationAdapter {
 
     nearestNodePixmap.draw(terrain, terrainInfo.getNearestNodes());
     nearestNodeTexture.draw(nearestNodePixmap.getPixmap(), 0, 0);
+
+    geographyPixmap.draw(terrain, terrainInfo.getGeography());
+    geographyTexture.draw(geographyPixmap.getPixmap(), 0, 0);
+
   }
 
 }
